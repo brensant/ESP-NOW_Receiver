@@ -8,7 +8,10 @@ class Drive {
   public:
 	Drive(Motor left, Motor right);
 
-	// Função(ões) para lidar com os pacotes ESP-NOW que chegam pelo controle remoto
+	bool init(uint32_t frequency, uint8_t resolution = 8);
+
+	void stop(); // Para os dois motores. Chamar no failsafe.
+
 	void handlePacket(t_espnow_data data);
 
   private:

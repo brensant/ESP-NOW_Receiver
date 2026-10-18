@@ -14,18 +14,19 @@ class Receiver {
 
 	esp_err_t init();
 
-	// Copia o último pacote válido para `out`. Retorna false se ainda não chegou nenhum.
 	bool     getLastPacket(t_ctrl_pckt& out) const;
 	bool     isLinkAlive() const;
 	uint32_t getLostPackets() const;
 
-	static constexpr uint32_t LINK_TIMEOUT_MS = 300; // sem pacotes por isso = failsafe
+	static constexpr uint32_t LINK_TIMEOUT_MS = 300; // Para ativar failsafe
 
   private:
-	static void onReceived(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len); // O ESP-NOW exige callback sem `this`, portanto precisa ser static.
-	void        handlePacket(const t_ctrl_pckt& pckt);
+	// O ESP-NOW exige callback sem `this`, portanto precisa ser static.
+	static void onReceived(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len);
 
-	static Receiver *s_instance; // assume uma única instância
+	void handlePacket(const t_ctrl_pckt& pckt);
+
+	static Receiver *s_instance;
 
 	t_ctrl_pckt          m_last;
 	uint32_t             m_lastPacketMs;

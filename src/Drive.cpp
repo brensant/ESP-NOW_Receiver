@@ -1,7 +1,5 @@
 #include "Drive.h"
 
-/*********************************** TYPES ************************************/
-
 /********************************* LIFECYCLE **********************************/
 
 Drive::Drive(Motor motorLeft, Motor motorRight)
@@ -10,21 +8,27 @@ Drive::Drive(Motor motorLeft, Motor motorRight)
 {
 }
 
-Drive::~Drive()
-{
-}
-
-/************************** STATIC MEMBER FUNCTIONS ***************************/
-
 /************************ NON-STATIC MEMBER FUNCTIONS *************************/
 
-void Drive::handlePacket(t_espnow_data packet)
+bool Drive::init(uint32_t frequency, uint8_t resolution)
 {
-	// TODO: Implementar
+	bool isLeftOk = m_motorLeft.init(frequency, resolution);
+	bool isRightOk = m_motorRight.init(frequency, resolution);
+
+	return (isLeftOk && isRightOk);
 }
 
-/* OPERATORS */
+void Drive::stop()
+{
+	m_motorLeft.stop();
+	m_motorRight.stop();
+}
 
-/****************************** HELPER FUNCTIONS ******************************/
-
-/* OPERATORS */
+/**
+ * Lida com os pacotes ESP-NOW que chegam pelo controle remoto.
+ */
+void Drive::handlePacket(t_espnow_data packet)
+{
+	(void)packet;
+	// TODO: Implementar
+}

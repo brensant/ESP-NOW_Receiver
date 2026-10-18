@@ -49,7 +49,7 @@ void Receiver::onReceived(const esp_now_recv_info_t *info, const uint8_t *incomi
  */
 esp_err_t Receiver::init()
 {
-	s_instance = this; // antes de registrar o callback
+	s_instance = this;
 
 	if (esp_now_init() != ESP_OK) {
 		Serial.println("Erro ao inicializar o ESP-NOW");
@@ -65,39 +65,44 @@ esp_err_t Receiver::init()
 	return (ESP_OK);
 }
 
+/**
+ * Copia o último pacote válido para `out`. Retorna false se ainda não chegou nenhum.
+ */
 bool Receiver::getLastPacket(t_ctrl_pckt& out) const
 {
-	bool has;
+	bool hasPacket;
 
 	portENTER_CRITICAL(&m_mux);
-	has = m_hasPacket;
-	if (has)
+	hasPacket = m_hasPacket;
+	if (hasPacket)
 		out = m_last;
 	portEXIT_CRITICAL(&m_mux);
-	return (has);
+
+	return (hasPacket);
 }
 
 bool Receiver::isLinkAlive() const
 {
-	bool     has;
-	uint32_t last;
+	bool     hasPacket;
+	uint32_t lastPacketMs;
 
 	portENTER_CRITICAL(&m_mux);
-	has  = m_hasPacket;
-	last = m_lastPacketMs;
+	hasPacket  = m_hasPacket;
+	lastPacketMs = m_lastPacketMs;
 	portEXIT_CRITICAL(&m_mux);
 
-	return (has && (millis() - last) < LINK_TIMEOUT_MS);
+	return (hasPacket && (millis() - lastPacketMs) < LINK_TIMEOUT_MS);
 }
 
 uint32_t Receiver::getLostPackets() const
 {
-	uint32_t lost;
+	uint32_t lostPackets;
 
 	portENTER_CRITICAL(&m_mux);
-	lost = m_lostPackets;
+	lostPackets = m_lostPackets;
 	portEXIT_CRITICAL(&m_mux);
-	return (lost);
+
+	return (lostPackets);
 }
 
 /****************************** HELPER FUNCTIONS ******************************/
