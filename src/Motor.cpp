@@ -4,12 +4,12 @@
 
 /********************************* LIFECYCLE **********************************/
 
-Motor::Motor(uint8_t en, uint8_t in1, uint8_t in2, uint8_t pwmChannel)
+Motor::Motor(uint8_t en, uint8_t in1, uint8_t in2, uint8_t pwmPin)
   : m_en(en)
   , m_in1(in1)
   , m_in2(in2)
-  , m_pwmPin(pwmChannel)
-  , m_maxDuty(MAX_DUTY)
+  , m_pwmPin(pwmPin)
+  , m_maxDuty(255)
 {
 }
 
@@ -17,6 +17,8 @@ Motor::Motor(uint8_t en, uint8_t in1, uint8_t in2, uint8_t pwmChannel)
 
 bool Motor::init(uint32_t frequency, uint8_t resolution)
 {
+	m_maxDuty = (1UL << resolution) - 1;
+
 	pinMode(m_en, OUTPUT);
 	pinMode(m_in1, OUTPUT);
 	pinMode(m_in2, OUTPUT);

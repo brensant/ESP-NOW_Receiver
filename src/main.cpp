@@ -32,7 +32,10 @@ void setup()
 	Serial.begin(9600);
 	WiFi.mode(WIFI_STA);
 
-	g_drive.init(MOTOR_FREQUENCY);
+	if (!g_drive.init(MOTOR_FREQUENCY)) {
+		Serial.println("Falha nos motores");
+		return;
+	}
 	g_receiver.init();
 }
 
