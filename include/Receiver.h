@@ -1,5 +1,5 @@
-#ifndef RECEIVER_HPP
-# define RECEIVER_HPP
+#ifndef RECEIVER_H
+# define RECEIVER_H
 
 # include "comms.h"
 # include "esp_now.h"
@@ -36,4 +36,4 @@ class Receiver {
 	mutable portMUX_TYPE m_mux;
 };
 
-#endif // RECEIVER_HPP
+#endif // RECEIVER_H

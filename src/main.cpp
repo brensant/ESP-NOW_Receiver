@@ -65,12 +65,11 @@ void loop()
 	if (g_receiver.isLinkAlive() && g_receiver.getLastPacket(pckt)) {
 		// Serial.printf("ID:%u  thr:%u  str:%u  W:%d  Wpn:%d  lost:%lu\n",
 		//               pckt.packetId, pckt.throttle, pckt.steering,
-		//               pckt.flags.isWheelsEnabled, pckt.flags.isWeaponEnabled,
 		//               (unsigned long)g_receiver.getLostPackets());
 
-		g_drive.handlePacket(pckt);
+		g_robot.handlePacket(pckt);
 	} else {
-		g_drive.stop(); // failsafe
+		g_robot.stop(); // failsafe
 	}
 
 	delay(20);

@@ -29,11 +29,6 @@ void Drive::stop()
  */
 void Drive::handlePacket(const t_ctrl_pckt &packet)
 {
-	if (!packet.flags.isWheelsEnabled) {
-		stop();
-		return;
-	}
-
 	int32_t throttle = axisToSpeed(packet.throttle);
 	int32_t steering = axisToSpeed(packet.steering);
 

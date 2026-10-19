@@ -1,5 +1,5 @@
-#ifndef ROBOT_HPP
-# define ROBOT_HPP
+#ifndef ROBOT_H
+# define ROBOT_H
 
 # include "Drive.h"
 # include "Weapon.h"
