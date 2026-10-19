@@ -1,7 +1,9 @@
 #include "Receiver.h"
 
-#include "Motor.h"
 #include "Drive.h"
+#include "Motor.h"
+#include "Robot.h"
+#include "Weapon.h"
 
 #include <Arduino.h>
 #include <WiFi.h>
@@ -18,6 +20,12 @@
 #define RMOTOR_IN2_PIN 6
 #define RMOTOR_PWM_PIN 7
 
+// Motor da arma
+#define WMOTOR_EN_PIN  8
+#define WMOTOR_IN1_PIN 9
+#define WMOTOR_IN2_PIN 10
+#define WMOTOR_PWM_PIN 11
+
 #define MOTOR_FREQUENCY 500 // ledc frequency (?)
 
 Receiver g_receiver;
@@ -27,12 +35,23 @@ Drive g_drive(
 	Motor(RMOTOR_EN_PIN, RMOTOR_IN1_PIN, RMOTOR_IN2_PIN, RMOTOR_PWM_PIN)
 );
 
+#ifdef HAS_WEAPON
+
+Weapon g_weapon(Motor(WMOTOR_EN_PIN, WMOTOR_IN1_PIN, WMOTOR_IN2_PIN, WMOTOR_PWM_PIN));
+Robot  g_robot(g_drive, &g_weapon);
+
+#else
+
+Robot g_robot(g_drive); // sumô: sem arma
+
+#endif
+
 void setup()
 {
 	Serial.begin(9600);
 	WiFi.mode(WIFI_STA);
 
-	if (!g_drive.init(MOTOR_FREQUENCY)) {
+	if (!g_robot.init(MOTOR_FREQUENCY)) {
 		Serial.println("Falha nos motores");
 		return;
 	}
@@ -44,10 +63,10 @@ void loop()
 	t_ctrl_pckt pckt;
 
 	if (g_receiver.isLinkAlive() && g_receiver.getLastPacket(pckt)) {
-		// Serial.printf("ID:%u  thr:%u  str:%u  W:%d  Wpn:%d  Dir:%d  lost:%lu\n",
+		// Serial.printf("ID:%u  thr:%u  str:%u  W:%d  Wpn:%d  lost:%lu\n",
 		//               pckt.packetId, pckt.throttle, pckt.steering,
 		//               pckt.flags.isWheelsEnabled, pckt.flags.isWeaponEnabled,
-		//               pckt.flags.weaponDirection, (unsigned long)g_receiver.getLostPackets());
+		//               (unsigned long)g_receiver.getLostPackets());
 
 		g_drive.handlePacket(pckt);
 	} else {
